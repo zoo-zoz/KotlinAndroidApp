@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_DATA_SYNC" />
+
+    <application
+        android:allowBackup="true"
+        android:icon="@android:drawable/sym_def_app_icon"
+        android:label="@string/app_name"
+        android:theme="@style/Theme.AppCompat.Light.DarkActionBar">
+        
+        <activity
+            android:name=".MainActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        
+        <activity
+            android:name=".MqttTestActivity"
+            android:label="MQTT测试"
+            android:parentActivityName=".MainActivity" />
+        
+        <activity
+            android:name=".ChartTestActivity"
+            android:label="图表测试"
+            android:parentActivityName=".MainActivity" />
+        
+        <activity
+            android:name=".IoTDashboardActivity"
+            android:label="IoT 数据监控"
+            android:parentActivityName=".MainActivity"
+            android:screenOrientation="portrait" />
+        
+        <activity
+            android:name=".PathAnimationActivity"
+            android:label="路径动画控制"
+            android:parentActivityName=".MainActivity" />
+        
+        <service 
+            android:name=".MqttForegroundService"
+            android:foregroundServiceType="dataSync"
+            android:exported="false" />
+    </application>
+
+</manifest>

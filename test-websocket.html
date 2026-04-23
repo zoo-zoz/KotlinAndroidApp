@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebSocket MQTT 测试工具</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 30px;
+        }
+        .input-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #666;
+            font-weight: bold;
+        }
+        input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-size: 14px;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-right: 10px;
+            margin-top: 10px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+        .disconnect-btn {
+            background-color: #f44336;
+        }
+        .disconnect-btn:hover {
+            background-color: #da190b;
+        }
+        .clear-btn {
+            background-color: #ff9800;
+        }
+        .clear-btn:hover {
+            background-color: #e68900;
+        }
+        #log {
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 15px;
+            margin-top: 20px;
+            height: 400px;
+            overflow-y: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+        .success {
+            color: #4CAF50;
+            font-weight: bold;
+        }
+        .error {
+            color: #f44336;
+            font-weight: bold;
+        }
+        .info {
+            color: #2196F3;
+        }
+        .warning {
+            color: #ff9800;
+        }
+        .status {
+            padding: 10px;
+            margin: 15px 0;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+        .status.connected {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .status.disconnected {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .status.connecting {
+            background-color: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeaa7;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔌 WebSocket MQTT 连接测试工具</h1>
+        
+        <div class="input-group">
+            <label for="host">主机地址:</label>
+            <input type="text" id="host" value="192.168.5.238" placeholder="例如: 192.168.5.238">
+        </div>
+        
+        <div class="input-group">
+            <label for="port">端口:</label>
+            <input type="number" id="port" value="8083" placeholder="例如: 8083">
+        </div>
+        
+        <div class="input-group">
+            <label for="path">WebSocket 路径:</label>
+            <input type="text" id="path" value="/mqtt" placeholder="例如: /mqtt 或 /">
+        </div>
+        
+        <div id="status" class="status disconnected">状态: 未连接</div>
+        
+        <button id="connectBtn" onclick="testConnection()">🔗 测试连接</button>
+        <button id="disconnectBtn" class="disconnect-btn" onclick="disconnect()" disabled>❌ 断开连接</button>
+        <button class="clear-btn" onclick="clearLog()">🗑️ 清空日志</button>
+        
+        <div id="log"></div>
+    </div>
+    
+    <script>
+        let ws = null;
+        let startTime = null;
+        
+        function getTimestamp() {
+            const now = new Date();
+            return `[${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}:${now.getSeconds().toString().padStart(2, '0')}]`;
+        }
+        
+        function log(msg, type = 'info') {
+            const logDiv = document.getElementById('log');
+            const timestamp = getTimestamp();
+            const className = type;
+            logDiv.innerHTML += `<span class="${className}">${timestamp} ${msg}</span>\n`;
+            logDiv.scrollTop = logDiv.scrollHeight;
+        }
+        
+        function clearLog() {
+            document.getElementById('log').innerHTML = '';
+            log('日志已清空', 'info');
+        }
+        
+        function updateStatus(text, state) {
+            const statusDiv = document.getElementById('status');
+            statusDiv.textContent = '状态: ' + text;
+            statusDiv.className = 'status ' + state;
+        }
+        
+        function updateButtons(connecting) {
+            document.getElementById('connectBtn').disabled = connecting;
+            document.getElementById('disconnectBtn').disabled = !connecting;
+        }
+        
+        function testConnection() {
+            const host = document.getElementById('host').value.trim();
+            const port = document.getElementById('port').value.trim();
+            const path = document.getElementById('path').value.trim();
+            
+            if (!host || !port) {
+                log('❌ 请填写主机地址和端口', 'error');
+                return;
+            }
+            
+            const url = `ws://${host}:${port}${path}`;
+            
+            log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━', 'info');
+            log('🚀 开始测试 WebSocket 连接', 'info');
+            log(`📍 URL: ${url}`, 'info');
+            log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━', 'info');
+            
+            updateStatus('正在连接...', 'connecting');
+            updateButtons(true);
+            startTime = Date.now();
+            
+            try {
+                ws = new WebSocket(url);
+                
+                ws.onopen = () => {
+                    const duration = Date.now() - startTime;
+                    log(`✅ WebSocket 连接成功！ (耗时: ${duration}ms)`, 'success');
+                    log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━', 'success');
+                    log('✓ 服务器支持 WebSocket 协议', 'success');
+                    log(`✓ 路径 "${path}" 正确`, 'success');
+                    log('✓ 可以在 Android 应用中使用此配置', 'success');
+                    log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━', 'success');
+                    updateStatus('已连接', 'connected');
+                };
+                
+                ws.onerror = (error) => {
+                    log('❌ WebSocket 连接失败', 'error');
+                    log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━', 'error');
+                    log('可能的原因:', 'error');
+                    log('1. 服务器未运行或端口未开放', 'error');
+                    log('2. WebSocket 路径不正确', 'error');
+                    log('3. 防火墙阻止连接', 'error');
+                    log('4. 服务器未配置 WebSocket 监听器', 'error');
+                    log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━', 'error');
+                    log('建议:', 'warning');
+                    log('• 尝试不同的路径: /mqtt, /, /ws, /websocket', 'warning');
+                    log('• 检查服务器日志', 'warning');
+                    log('• 确认服务器配置', 'warning');
+                    log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━', 'warning');
+                    updateStatus('连接失败', 'disconnected');
+                    updateButtons(false);
+                };
+                
+                ws.onclose = (event) => {
+                    log(`🔌 WebSocket 连接关闭 (代码: ${event.code}, 原因: ${event.reason || '无'})`, 'info');
+                    updateStatus('已断开', 'disconnected');
+                    updateButtons(false);
+                };
+                
+                ws.onmessage = (event) => {
+                    log(`📨 收到消息: ${event.data}`, 'info');
+                };
+                
+            } catch (error) {
+                log(`❌ 创建 WebSocket 失败: ${error.message}`, 'error');
+                updateStatus('连接失败', 'disconnected');
+                updateButtons(false);
+            }
+        }
+        
+        function disconnect() {
+            if (ws) {
+                log('🔌 正在断开连接...', 'info');
+                ws.close();
+                ws = null;
+            }
+        }
+        
+        // 页面加载时显示欢迎信息
+        window.onload = () => {
+            log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━', 'info');
+            log('🎉 WebSocket MQTT 测试工具已就绪', 'success');
+            log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━', 'info');
+            log('📝 使用说明:', 'info');
+            log('1. 填写服务器地址、端口和路径', 'info');
+            log('2. 点击"测试连接"按钮', 'info');
+            log('3. 查看连接结果', 'info');
+            log('4. 如果成功，在 Android 应用中使用相同配置', 'info');
+            log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━', 'info');
+            log('', 'info');
+        };
+        
+        // 页面关闭时断开连接
+        window.onbeforeunload = () => {
+            if (ws) {
+                ws.close();
+            }
+        };
+    </script>
+</body>
+</html>

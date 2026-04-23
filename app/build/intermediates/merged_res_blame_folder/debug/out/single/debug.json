@@ -1,0 +1,26 @@
+[
+    {
+        "merged": "D:\\gradr\\daemon\\8.2\\com.example.testapp-merged_res-4:\\layout_activity_path_animation.xml.flat",
+        "source": "D:\\gradr\\daemon\\8.2\\com.example.testapp-main-6:\\layout\\activity_path_animation.xml"
+    },
+    {
+        "merged": "com.example.testapp-merged_res-4:/layout_activity_path_animation.xml.flat",
+        "source": "com.example.testapp-main-6:/layout/activity_path_animation.xml"
+    },
+    {
+        "merged": "D:\\gradr\\daemon\\8.2\\com.example.testapp-merged_res-4:\\layout_activity_main.xml.flat",
+        "source": "D:\\gradr\\daemon\\8.2\\com.example.testapp-main-6:\\layout\\activity_main.xml"
+    },
+    {
+        "merged": "D:\\gradr\\daemon\\8.2\\com.example.testapp-merged_res-4:\\layout_activity_iot_dashboard.xml.flat",
+        "source": "D:\\gradr\\daemon\\8.2\\com.example.testapp-main-6:\\layout\\activity_iot_dashboard.xml"
+    },
+    {
+        "merged": "D:\\gradr\\daemon\\8.2\\com.example.testapp-merged_res-4:\\layout_activity_chart_test.xml.flat",
+        "source": "D:\\gradr\\daemon\\8.2\\com.example.testapp-main-6:\\layout\\activity_chart_test.xml"
+    },
+    {
+        "merged": "D:\\gradr\\daemon\\8.2\\com.example.testapp-merged_res-4:\\layout_activity_mqtt_test.xml.flat",
+        "source": "D:\\gradr\\daemon\\8.2\\com.example.testapp-main-6:\\layout\\activity_mqtt_test.xml"
+    }
+]

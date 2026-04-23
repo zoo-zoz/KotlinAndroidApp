@@ -1,0 +1,108 @@
+name: Release APK
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version name'
+        required: false
+        default: 'manual-build'
+
+jobs:
+  build-release:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: gradle
+      
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+      
+      - name: Get version info
+        id: version
+        run: |
+          if [[ $GITHUB_REF == refs/tags/* ]]; then
+            VERSION=${GITHUB_REF#refs/tags/}
+          elif [[ "${{ github.event.inputs.version }}" != "" ]]; then
+            VERSION="${{ github.event.inputs.version }}"
+          else
+            VERSION="build-$(date +'%Y%m%d-%H%M%S')"
+          fi
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "date=$(date +'%Y-%m-%d %H:%M:%S')" >> $GITHUB_OUTPUT
+          echo "short_sha=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
+      
+      - name: Build Debug APK
+        run: ./gradlew assembleDebug --stacktrace
+      
+      - name: Build Release APK
+        run: ./gradlew assembleRelease --stacktrace
+        continue-on-error: true
+      
+      - name: Prepare artifacts
+        run: |
+          mkdir -p artifacts
+          
+          # Debug APK
+          if [ -f app/build/outputs/apk/debug/app-debug.apk ]; then
+            cp app/build/outputs/apk/debug/app-debug.apk \
+               artifacts/KotlinAndroidApp-debug-${{ steps.version.outputs.version }}.apk
+            echo "✅ Debug APK created"
+          fi
+          
+          # Release APK
+          if [ -f app/build/outputs/apk/release/app-release-unsigned.apk ]; then
+            cp app/build/outputs/apk/release/app-release-unsigned.apk \
+               artifacts/KotlinAndroidApp-release-${{ steps.version.outputs.version }}.apk
+            echo "✅ Release APK created"
+          fi
+          
+          ls -lh artifacts/
+      
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: apk-${{ steps.version.outputs.version }}
+          path: artifacts/*.apk
+          retention-days: 30
+      
+      - name: Create Release
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v1
+        with:
+          files: artifacts/*.apk
+          body: |
+            ## 📦 Android APK Release
+            
+            **Version:** ${{ steps.version.outputs.version }}
+            **Build Date:** ${{ steps.version.outputs.date }}
+            **Commit:** ${{ steps.version.outputs.short_sha }}
+            
+            ### 📥 Download
+            - **Debug APK**: For testing and debugging
+            - **Release APK**: For production use (unsigned)
+            
+            ### 📱 Installation
+            1. Download the APK file
+            2. Enable "Install from Unknown Sources" on your device
+            3. Install the APK
+            
+            ### 🔧 Changes
+            See commit history for details.
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
