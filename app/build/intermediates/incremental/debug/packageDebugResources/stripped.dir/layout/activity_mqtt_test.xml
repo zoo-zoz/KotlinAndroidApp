@@ -1,0 +1,331 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <!-- 连接配置 -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="连接配置"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="8dp" />
+
+        <RadioGroup
+            android:id="@+id/rgProtocol"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="8dp">
+            
+            <RadioButton
+                android:id="@+id/rbTcp"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="TCP"
+                android:checked="true" />
+            
+            <RadioButton
+                android:id="@+id/rbWebSocket"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="WebSocket" />
+        </RadioGroup>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="8dp">
+            
+            <EditText
+                android:id="@+id/etHost"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:hint="主机地址"
+                android:inputType="text"
+                android:layout_marginEnd="8dp" />
+            
+            <EditText
+                android:id="@+id/etPort"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:hint="端口"
+                android:inputType="number" />
+        </LinearLayout>
+
+        <EditText
+            android:id="@+id/etWsPath"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="WebSocket 路径（如 /mqtt 或 /）"
+            android:inputType="text"
+            android:visibility="gone"
+            android:layout_marginBottom="8dp" />
+
+        <EditText
+            android:id="@+id/etClientId"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="客户端 ID"
+            android:inputType="text"
+            android:layout_marginBottom="8dp" />
+
+        <EditText
+            android:id="@+id/etUsername"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="用户名（可选）"
+            android:inputType="text"
+            android:layout_marginBottom="8dp" />
+
+        <EditText
+            android:id="@+id/etPassword"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="密码（可选）"
+            android:inputType="textPassword"
+            android:layout_marginBottom="8dp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="8dp">
+            
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Keep Alive (秒): "
+                android:layout_gravity="center_vertical" />
+            
+            <EditText
+                android:id="@+id/etKeepAlive"
+                android:layout_width="80dp"
+                android:layout_height="wrap_content"
+                android:inputType="number"
+                android:layout_marginEnd="16dp" />
+            
+            <Switch
+                android:id="@+id/swCleanStart"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Clean Start" />
+        </LinearLayout>
+
+        <Switch
+            android:id="@+id/swAutoReconnect"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="自动重连"
+            android:layout_marginBottom="16dp" />
+
+        <!-- 遗嘱消息 -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="遗嘱消息（Last Will）"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="8dp" />
+
+        <EditText
+            android:id="@+id/etWillTopic"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="遗嘱主题（可选）"
+            android:inputType="text"
+            android:layout_marginBottom="8dp" />
+
+        <EditText
+            android:id="@+id/etWillMessage"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="遗嘱消息（可选）"
+            android:inputType="text"
+            android:layout_marginBottom="8dp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="16dp">
+            
+            <Spinner
+                android:id="@+id/spWillQos"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginEnd="8dp" />
+            
+            <Switch
+                android:id="@+id/swWillRetain"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Retain" />
+        </LinearLayout>
+
+        <!-- 连接按钮 -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="16dp">
+            
+            <Button
+                android:id="@+id/btnConnect"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="连接"
+                android:layout_marginEnd="8dp" />
+            
+            <Button
+                android:id="@+id/btnDisconnect"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="断开" />
+        </LinearLayout>
+
+        <!-- 订阅 -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="订阅主题"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="8dp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="8dp">
+            
+            <EditText
+                android:id="@+id/etSubTopic"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:hint="订阅主题"
+                android:inputType="text"
+                android:layout_marginEnd="8dp" />
+            
+            <Spinner
+                android:id="@+id/spSubQos"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp" />
+            
+            <Button
+                android:id="@+id/btnSubscribe"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="订阅" />
+        </LinearLayout>
+
+        <!-- 发布 -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="发布消息"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="8dp" />
+
+        <EditText
+            android:id="@+id/etPubTopic"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="发布主题"
+            android:inputType="text"
+            android:layout_marginBottom="8dp" />
+
+        <EditText
+            android:id="@+id/etPubMessage"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="消息内容"
+            android:inputType="text"
+            android:layout_marginBottom="8dp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="16dp">
+            
+            <Spinner
+                android:id="@+id/spPubQos"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginEnd="8dp" />
+            
+            <Switch
+                android:id="@+id/swPubRetain"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Retain"
+                android:layout_marginEnd="8dp" />
+            
+            <Button
+                android:id="@+id/btnPublish"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="发布" />
+        </LinearLayout>
+
+        <!-- 状态和日志 -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="8dp">
+            
+            <TextView
+                android:id="@+id/tvStatus"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="状态: 未连接"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+            
+            <Button
+                android:id="@+id/btnClearLog"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="清空日志" />
+        </LinearLayout>
+
+        <ScrollView
+            android:id="@+id/scrollViewLog"
+            android:layout_width="match_parent"
+            android:layout_height="300dp"
+            android:background="#F5F5F5"
+            android:padding="8dp">
+            
+            <TextView
+                android:id="@+id/tvLog"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="12sp"
+                android:fontFamily="monospace"
+                android:text="等待连接...\n" />
+        </ScrollView>
+
+    </LinearLayout>
+</ScrollView>
