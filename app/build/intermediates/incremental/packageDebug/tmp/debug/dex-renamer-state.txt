@@ -1,9 +1,9 @@
-#Thu Apr 23 10:49:33 CST 2026
-base.0=D\:\\changForMeNew\\app22\\KotlinAndroidApp\\app\\build\\intermediates\\dex\\debug\\mergeExtDexDebug\\classes.dex
-base.1=D\:\\changForMeNew\\app22\\KotlinAndroidApp\\app\\build\\intermediates\\dex\\debug\\mergeProjectDexDebug\\0\\classes.dex
-base.2=D\:\\changForMeNew\\app22\\KotlinAndroidApp\\app\\build\\intermediates\\dex\\debug\\mergeProjectDexDebug\\3\\classes.dex
-base.3=D\:\\changForMeNew\\app22\\KotlinAndroidApp\\app\\build\\intermediates\\dex\\debug\\mergeProjectDexDebug\\6\\classes.dex
-base.4=D\:\\changForMeNew\\app22\\KotlinAndroidApp\\app\\build\\intermediates\\dex\\debug\\mergeExtDexDebug\\classes2.dex
+#Thu Apr 23 15:26:20 CST 2026
+base.0=E\:\\Agent\\KotlinAndroidApp\\app\\build\\intermediates\\dex\\debug\\mergeExtDexDebug\\classes.dex
+base.1=E\:\\Agent\\KotlinAndroidApp\\app\\build\\intermediates\\dex\\debug\\mergeProjectDexDebug\\0\\classes.dex
+base.2=E\:\\Agent\\KotlinAndroidApp\\app\\build\\intermediates\\dex\\debug\\mergeProjectDexDebug\\3\\classes.dex
+base.3=E\:\\Agent\\KotlinAndroidApp\\app\\build\\intermediates\\dex\\debug\\mergeProjectDexDebug\\6\\classes.dex
+base.4=E\:\\Agent\\KotlinAndroidApp\\app\\build\\intermediates\\dex\\debug\\mergeExtDexDebug\\classes2.dex
 path.0=classes.dex
 path.1=0/classes.dex
 path.2=3/classes.dex
